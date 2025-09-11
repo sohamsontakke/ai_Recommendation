@@ -2,8 +2,7 @@
 
 A modern React application that uses Google's Gemini AI to provide intelligent product recommendations based on user queries. Simply describe what you're looking for, and the AI will recommend the best matching products from our curated catalog.
 
-![AI Product Recommender](https://img.shields.io/badge/React-18.2.0-blue) ![Gemini AI](https://img.shields.io/badge/Gemini-AI-green) ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.1.13-blue)
-
+![AI Product Recommender](https://img.shields.io/badge/React-18.2.0-blue) ![Gemini AI](https://img.shields.io/badge/Gemini-AI-green) 
 ## 🚀 Features
 
 - **AI-Powered Recommendations**: Uses Google Gemini AI to understand natural language queries
