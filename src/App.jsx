@@ -22,23 +22,23 @@ User wants: ${input}
 
 Please recommend up to 3 matching products. Return only the product names, one per line, exactly as they appear in the list above.`;
 
+      // ✅ Updated model: gemini-2.5-pro
       const response = await fetch(
-  `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${process.env.REACT_APP_GEMINI_API_KEY}`,
-  {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      contents: [
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=${process.env.REACT_APP_GEMINI_API_KEY}`,
         {
-          parts: [{ text: prompt }],
-        },
-      ],
-    }),
-  }
-);
-
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [{ text: prompt }],
+              },
+            ],
+          }),
+        }
+      );
 
       const result = await response.json();
 
@@ -50,16 +50,19 @@ Please recommend up to 3 matching products. Return only the product names, one p
         return;
       }
 
-      // Parse the response and match with actual products
-      const productNames = text.split('\n').filter(line => line.trim());
+      // Parse and match product names from response
+      const productNames = text
+        .split('\n')
+        .map(line => line.trim())
+        .filter(line => line.length > 0);
+
       const matches = products.filter(product =>
         productNames.some(name =>
-          name.toLowerCase().includes(product.name.toLowerCase()) ||
-          product.name.toLowerCase().includes(name.toLowerCase())
+          name.toLowerCase() === product.name.toLowerCase()
         )
       );
 
-      setRecommendations(matches.slice(0, 3)); // Limit to 3 recommendations
+      setRecommendations(matches.slice(0, 3)); // Limit to 3
 
     } catch (err) {
       console.error("Error:", err);
@@ -116,5 +119,3 @@ Please recommend up to 3 matching products. Return only the product names, one p
     </div>
   );
 }
-
-
