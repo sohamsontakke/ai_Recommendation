@@ -138,6 +138,12 @@ main {
   color: #666;
 }
 
+.loading-message {
+  font-style: italic;
+  color: #555;
+  margin: 10px 0;
+}
+
 /* Placeholder text */
 .placeholder {
   text-align: center;
@@ -154,3 +160,4 @@ footer {
   color: white;
   font-size: 0.9rem;
 }
+
