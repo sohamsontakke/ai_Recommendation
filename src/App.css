@@ -140,7 +140,7 @@ main {
 
 .loading-message {
   font-style: italic;
-  color: #555;
+  color: white;
   margin: 10px 0;
 }
 
@@ -160,4 +160,5 @@ footer {
   color: white;
   font-size: 0.9rem;
 }
+
 
