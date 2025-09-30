@@ -1,7 +1,5 @@
-
-
 import React, { useState } from "react";
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai"; // ✅ correct import
 import { products } from "./products";
 import "./App.css";
 
@@ -18,49 +16,42 @@ export default function App() {
 
     setLoading(true);
     try {
-      const genAI = new GoogleGenAI({
-        apiKey: process.env.REACT_APP_GEMINI_API_KEY,
-      });
+      // ✅ Initialize Gemini client
+      const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_API_KEY);
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
       const prompt = `Here are some products:
 ${products.map(p => `${p.name} - $${p.price} - ${p.description}`).join("\n")}
 
 User wants: ${input}
 
-Please recommend up to 3 matching products. Return only the product names, one per line, exactly as they appear in the list above.`;
+Please recommend up to 3 matching products.
+Return only the product names, one per line, exactly as they appear above.`;
 
-      const result = await genAI.models.generateContent({
-        model: "gemini-1.5-flash",
-        contents: [
-          {
-            parts: [
-              { text: prompt }
-            ]
-          }
-        ]
-      });
+      // ✅ Generate content
+      const result = await model.generateContent(prompt);
 
-      const text = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+      // ✅ Extract text safely
+      const text = result.response.text();
+      console.log("Raw Gemini response:", text);
 
       if (!text) {
-        console.error("No text returned from Gemini:", result);
         setRecommendations([]);
         return;
       }
 
-      // Parse the response and match with actual products
-      const productNames = text.split('\n').filter(line => line.trim());
-      const matches = products.filter(product => 
-        productNames.some(name => 
+      // Parse returned names and map to actual products
+      const productNames = text.split("\n").filter(line => line.trim());
+      const matches = products.filter(product =>
+        productNames.some(name =>
           name.toLowerCase().includes(product.name.toLowerCase()) ||
           product.name.toLowerCase().includes(name.toLowerCase())
         )
       );
 
-      setRecommendations(matches.slice(0, 3)); // Limit to 3 recommendations
-
+      setRecommendations(matches.slice(0, 3)); // limit to 3 results
     } catch (err) {
-      console.error("Error:", err);
+      console.error("Error calling Gemini API:", err);
       setRecommendations([]);
     } finally {
       setLoading(false);
@@ -93,11 +84,13 @@ Please recommend up to 3 matching products. Return only the product names, one p
               <div className="card" key={item.id || idx}>
                 <h3>{item.name}</h3>
                 <p className="price">${item.price}</p>
-                <p className="brand">{item.brand}</p>
+                {item.brand && <p className="brand">{item.brand}</p>}
                 <p className="description">{item.description}</p>
-                <div className="rating">
-                  <span>⭐ {item.rating}/5</span>
-                </div>
+                {item.rating && (
+                  <div className="rating">
+                    <span>⭐ {item.rating}/5</span>
+                  </div>
+                )}
               </div>
             ))
           ) : (
