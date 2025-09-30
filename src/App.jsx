@@ -1,7 +1,4 @@
-
-
 import React, { useState } from "react";
-import { GoogleGenAI } from "@google/genai";
 import { products } from "./products";
 import "./App.css";
 
@@ -18,10 +15,6 @@ export default function App() {
 
     setLoading(true);
     try {
-      const genAI = new GoogleGenAI({
-        apiKey: process.env.REACT_APP_GEMINI_API_KEY,
-      });
-
       const prompt = `Here are some products:
 ${products.map(p => `${p.name} - $${p.price} - ${p.description}`).join("\n")}
 
@@ -29,16 +22,24 @@ User wants: ${input}
 
 Please recommend up to 3 matching products. Return only the product names, one per line, exactly as they appear in the list above.`;
 
-      const result = await genAI.models.generateContent({
-        model: "gemini-1.5-flash",
-        contents: [
-          {
-            parts: [
-              { text: prompt }
-            ]
-          }
-        ]
-      });
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${process.env.REACT_APP_GEMINI_API_KEY}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [{ text: prompt }],
+              },
+            ],
+          }),
+        }
+      );
+
+      const result = await response.json();
 
       const text = result?.candidates?.[0]?.content?.parts?.[0]?.text;
 
@@ -50,8 +51,8 @@ Please recommend up to 3 matching products. Return only the product names, one p
 
       // Parse the response and match with actual products
       const productNames = text.split('\n').filter(line => line.trim());
-      const matches = products.filter(product => 
-        productNames.some(name => 
+      const matches = products.filter(product =>
+        productNames.some(name =>
           name.toLowerCase().includes(product.name.toLowerCase()) ||
           product.name.toLowerCase().includes(name.toLowerCase())
         )
@@ -114,4 +115,3 @@ Please recommend up to 3 matching products. Return only the product names, one p
     </div>
   );
 }
-
