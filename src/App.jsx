@@ -16,7 +16,7 @@ export default function App() {
     setLoading(true);
     try {
       const prompt = `Here are some products:
-${products.map(p => `${p.name} - $${p.price} - ${p.description}`).join("\n")}
+${products.map(p => `${p.name} - $${p.price}`).join("\n")}
 
 User wants: ${input}
 
@@ -124,4 +124,5 @@ Please recommend up to 3 matching products. Return only the product names, one p
     </div>
   );
 }
+
 
