@@ -23,21 +23,22 @@ User wants: ${input}
 Please recommend up to 3 matching products. Return only the product names, one per line, exactly as they appear in the list above.`;
 
       const response = await fetch(
-       `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${process.env.REACT_APP_GEMINI_API_KEY}`,
+  `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${process.env.REACT_APP_GEMINI_API_KEY}`,
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      contents: [
         {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            contents: [
-              {
-                parts: [{ text: prompt }],
-              },
-            ],
-          }),
-        }
-      );
+          parts: [{ text: prompt }],
+        },
+      ],
+    }),
+  }
+);
+
 
       const result = await response.json();
 
@@ -115,4 +116,5 @@ Please recommend up to 3 matching products. Return only the product names, one p
     </div>
   );
 }
+
 
