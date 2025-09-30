@@ -79,39 +79,44 @@ Please recommend up to 3 matching products. Return only the product names, one p
         <p>Find the perfect product with the power of AI</p>
       </header>
 
-      <main>
-        <div className="search-box">
-          <input
-            type="text"
-            placeholder="e.g., Laptop under $800"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-          />
-          <button onClick={getRecommendations} disabled={loading}>
-            {loading ? "Loading..." : "Get Recommendations"}
-          </button>
-        </div>
+<main>
+  <div className="search-box">
+    <input
+      type="text"
+      placeholder="e.g., Laptop under $800"
+      value={input}
+      onChange={(e) => setInput(e.target.value)}
+    />
+    <button onClick={getRecommendations} disabled={loading}>
+      Get Recommendations
+    </button>
+  </div>
 
-        <section className="results">
-          {recommendations.length > 0 ? (
-            recommendations.map((item, idx) => (
-              <div className="card" key={item.id || idx}>
-                <h3>{item.name}</h3>
-                <p className="price">${item.price}</p>
-                <p className="brand">{item.brand}</p>
-                <p className="description">{item.description}</p>
-                <div className="rating">
-                  <span>⭐ {item.rating}/5</span>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p className="placeholder">
-              Enter your preference and click <strong>Get Recommendations</strong>.
-            </p>
-          )}
-        </section>
-      </main>
+  {loading && <p className="loading-message">Please wait, the products are loading...</p>}
+
+  <section className="results">
+    {recommendations.length > 0 ? (
+      recommendations.map((item, idx) => (
+        <div className="card" key={item.id || idx}>
+          <h3>{item.name}</h3>
+          <p className="price">${item.price}</p>
+          <p className="brand">{item.brand}</p>
+          <p className="description">{item.description}</p>
+          <div className="rating">
+            <span>⭐ {item.rating}/5</span>
+          </div>
+        </div>
+      ))
+    ) : (
+      !loading && (
+        <p className="placeholder">
+          Enter your preference and click <strong>Get Recommendations</strong>.
+        </p>
+      )
+    )}
+  </section>
+</main>
+
 
       <footer>
         <p>© {new Date().getFullYear()} AI Recommender</p>
@@ -119,3 +124,4 @@ Please recommend up to 3 matching products. Return only the product names, one p
     </div>
   );
 }
+
